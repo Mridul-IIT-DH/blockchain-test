@@ -1,0 +1,10 @@
+body {
+    font-family: sans-serif;
+    text-align: center;
+    margin: 50px;
+}
+
+#data {
+    margin-top: 20px;
+    font-size: 1.2em;
+}

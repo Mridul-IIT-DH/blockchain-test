@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "express": "^5.1.0",
+    "web3": "^4.16.0"
+  },
+  "scripts": {
+    "migrate": "truffle migrate",
+    "start": "node server.js"
+  }
+}
