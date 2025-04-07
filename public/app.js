@@ -1,3 +1,5 @@
+import Web3 from "web3";
+
 const Web3 = require("web3").default;
 
 async function fetchData() {
@@ -184,7 +186,7 @@ async function fetchData() {
                 "constant": true
             }
         ];
-        const contractAddress = "0x558cf67fBADE259abAB21DBd41424271C39d954d";
+        const contractAddress = "0x8939bb96Edf6a6f7FC96f0148F66063D0f00a69B";
 
         const airQualityContract = new web3.eth.Contract(contractABI, contractAddress);
         const readingCount = await airQualityContract.methods.getReadingCount().call();

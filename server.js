@@ -3,11 +3,11 @@ const path = require("path");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Serve static files from the "public" directory
-app.use(express.static(path.join(__dirname, "public")));
+// Serve static files from the "public/dist" directory (Parcel output)
+app.use(express.static(path.join(__dirname, "public", "dist"))); // Changed this line
 
 app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "index.html"));
+    res.sendFile(path.join(__dirname, "public", "dist", "index.html")); // And this line
 });
 
 app.listen(PORT, () => {

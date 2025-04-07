@@ -27,6 +27,7 @@ This document provides a comprehensive guide to building a simulated Decentraliz
         npm install -g truffle
         npm install web3 express
         npm install -g ganache
+        npm install -D parcel
         ```
         -g: means global install.  
 4.  **Verify Dependency Installations:**
@@ -310,11 +311,18 @@ contract AirQualityData {
     -   **Paste the ABI from `build/contracts/AirQualityData.json` into the `contractABI` array in `app.js`.**
         - It will be present in "abi": [<ABI_IN_JSON_FORMATE>].
     - **Important:** After deploying your smart contract with npm run migrate, you must update the contractAddress in public/app.js with the new address provided in the terminal output. Also, replace the existing ABI in app.js with the entire ABI from build/contracts/AirQualityData.json, making sure the ABI includes the getReading function.
-4.  **Run the Web Server:**
+    - Build the website using `npm run dev`.
+4.  **Run the Parcel:**
+    -   In the new terminal you can run Parcel to bundle your front-end code before starting the Express server by the following command:
+        ```bash
+        npm run dev
+        ```
+5.  **Run the Web Server:**
     -   In the new terminal you can start the `server` by the following command:
         ```bash
         npm run start
         ```
+    - Go to the address `https://3000-idx-test-1743944668049.cluster-a3grjzek65cxex762e4mwrzl46.cloudworkstations.dev/` to see the webpage.
 
 ### 3.5. Testing and Verification
 
