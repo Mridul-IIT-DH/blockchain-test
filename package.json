@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "express": "^5.1.0",
+    "express": "^4.19.2",
     "web3": "^4.16.0"
   },
   "scripts": {

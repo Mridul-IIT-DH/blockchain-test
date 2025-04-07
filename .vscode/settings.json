@@ -66,6 +66,7 @@
     "code-runner.runInTerminal": true,
     "notebook.editorOptionsCustomizations": {
         "editor.tabSize": 4,
+        "editor.spaceSize": 4,
         "editor.indentSize": 4,
         "editor.insertSpaces": true
     },

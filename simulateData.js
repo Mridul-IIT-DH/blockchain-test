@@ -9,7 +9,7 @@ const contractJson = require(path.join(__dirname, "build", "contracts", "AirQual
 
 // Create contract instance
 const contractABI = contractJson.abi;
-const contractAddress = contractJson.networks["1743957503920"].address; // Use the correct network ID
+const contractAddress = contractJson.networks["1744043541795"].address; // Use the correct network ID
 
 const airQualityContract = new web3.eth.Contract(contractABI, contractAddress);
 

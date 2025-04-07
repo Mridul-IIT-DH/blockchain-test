@@ -36,4 +36,10 @@ contract AirQualityData {
     function getReadingCount() public view returns (uint256) {
         return readings.length;
     }
+    
+    // Function to get the latest reading by accessing the last element of the readings array
+    function getReading(uint index) public view returns (uint, uint, uint, uint, uint) {
+        Reading memory r = readings[index];
+        return (r.timestamp, r.co2, r.no2, r.pm25, r.pm10);
+    }
 }
