@@ -66,57 +66,57 @@ This document provides a comprehensive guide to building a simulated Decentraliz
 2.  **Create `AirQualityData.sol`:**
     -   Navigate to the `contracts` directory and create a new file named `AirQualityData.sol`.
     -   Paste the following smart contract code into the file:
-```sol
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+    ```sol
+    // SPDX-License-Identifier: MIT
+    pragma solidity ^0.8.0;
 
-contract AirQualityData {
-    struct Reading {
-        uint256 timestamp;
-        uint256 co2;
-        uint256 no2;
-        uint256 pm25;
-        uint256 pm10;
+    contract AirQualityData {
+        struct Reading {
+            uint256 timestamp;
+            uint256 co2;
+            uint256 no2;
+            uint256 pm25;
+            uint256 pm10;
+        }
+
+        Reading[] public readings;
+        address public owner;
+
+        event NewReading(uint256 timestamp, uint256 co2, uint256 no2, uint256 pm25, uint256 pm10);
+
+        constructor() {
+            owner = msg.sender;
+        }
+
+        // Modifier to restrict function access
+        modifier onlyOwner() {
+            require(msg.sender == owner, "Only owner can call this function");
+            _;
+        }
+
+        // Function to add a new reading (simulated IoT sensor data)
+        function addReading(uint256 _co2, uint256 _no2, uint256 _pm25, uint256 _pm10) public onlyOwner {
+            uint256 currentTime = block.timestamp;
+            readings.push(Reading(currentTime, _co2, _no2, _pm25, _pm10));
+            emit NewReading(currentTime, _co2, _no2, _pm25, _pm10);
+        }
+
+        // Function to get total number of readings
+        function getReadingCount() public view returns (uint256) {
+            return readings.length;
+        }
+        
+        // Function to get the latest reading by accessing the last element of the readings array
+        function getReading(uint index) public view returns (uint, uint, uint, uint, uint) {
+            Reading memory r = readings[index];
+            return (r.timestamp, r.co2, r.no2, r.pm25, r.pm10);
+        }
     }
-
-    Reading[] public readings;
-    address public owner;
-
-    event NewReading(uint256 timestamp, uint256 co2, uint256 no2, uint256 pm25, uint256 pm10);
-
-    constructor() {
-        owner = msg.sender;
-    }
-
-    // Modifier to restrict function access
-    modifier onlyOwner() {
-        require(msg.sender == owner, "Only owner can call this function");
-        _;
-    }
-
-    // Function to add a new reading (simulated IoT sensor data)
-    function addReading(uint256 _co2, uint256 _no2, uint256 _pm25, uint256 _pm10) public onlyOwner {
-        uint256 currentTime = block.timestamp;
-        readings.push(Reading(currentTime, _co2, _no2, _pm25, _pm10));
-        emit NewReading(currentTime, _co2, _no2, _pm25, _pm10);
-    }
-
-    // Function to get total number of readings
-    function getReadingCount() public view returns (uint256) {
-        return readings.length;
-    }
-    
-    // Function to get the latest reading by accessing the last element of the readings array
-    function getReading(uint index) public view returns (uint, uint, uint, uint, uint) {
-        Reading memory r = readings[index];
-        return (r.timestamp, r.co2, r.no2, r.pm25, r.pm10);
-    }
-}
-```
+    ```
 3.  **Compile the Smart Contract:**
     -   In the terminal, run:
         ```bash
-            truffle compile
+        truffle compile
         ```
 4.  **Create `2_deploy_contracts.js`:**
     -   Navigate to the `migrations` directory and create a file named `2_deploy_contracts.js`.
@@ -133,14 +133,19 @@ contract AirQualityData {
         ```json
         {
             "dependencies": {
-                "express": "^4.19.2",
+                "express": "^4.21.2",
                 "web3": "^4.16.0"
             },
+            "devDependencies": {
+                "parcel": "^2.14.4"
+            },
             "scripts": {
-                "migrate": "truffle migrate",
-                "start": "node server.js"
+                "migrate": "npx truffle migrate",
+                "start": "node server.js",
+                "build": "parcel build public/index.html --dist-dir public/dist",
+                "dev": "parcel public/index.html --dist-dir public/dist"
             }
-        }
+            }
         ```
 6.  **Start Ganache:**
     -   In a new terminal you can run `ganache emulator` by the following command:
@@ -172,9 +177,8 @@ contract AirQualityData {
 
         // Create contract instance
         const contractABI = contractJson.abi;
-        
         // Use the correct network ID
-        const contractAddress = contractJson.networks[<YOUR_NETWORK_ID>].address; 
+        const contractAddress = contractJson.networks["<YOUR_NETWORK_ID>"].address;
 
         const airQualityContract = new web3.eth.Contract(contractABI, contractAddress);
 
@@ -207,6 +211,7 @@ contract AirQualityData {
         setInterval(simulateSensorData, 10000);
         ```
         - Replace `<YOUR_NETWORK_ID>` with the correct network ID. You will find this in the terminal where you ran the command `npm run migrate`. The Network ID get generated after running the command `npm run migrate`.
+        - After every run a new network id will get added to `AirQualityData.json` present at `/home/user/test/build/contracts/AirQualityData.json`, which cannot be used later, so you can delete it time to time to keep the file clean.
 2.  **Run the Simulation Script:**
     -   In the terminal you can run `simulateData.js` by the following command:
         ```bash
@@ -224,11 +229,11 @@ contract AirQualityData {
     const app = express();
     const PORT = process.env.PORT || 3000;
 
-    // Serve static files from the "public" directory
-    app.use(express.static(path.join(__dirname, "public")));
+    // Serve static files from the "public/dist" directory (Parcel output)
+    app.use(express.static(path.join(__dirname, "public", "dist"))); // Changed this line
 
     app.get("/", (req, res) => {
-        res.sendFile(path.join(__dirname, "public", "index.html"));
+        res.sendFile(path.join(__dirname, "public", "dist", "index.html")); // And this line
     });
 
     app.listen(PORT, () => {
@@ -256,7 +261,7 @@ contract AirQualityData {
             <p>PM2.5: <span id="pm25"></span></p>
             <p>PM10: <span id="pm10"></span></p>
         </div>
-        <script src="app.js"></script>
+        <script type="module" src="app.js"></script>
     </body>
     </html>
     ```
@@ -276,6 +281,8 @@ contract AirQualityData {
 
     **JS code**
     ```js
+    import Web3 from "web3";
+
     const Web3 = require("web3").default;
 
     async function fetchData() {
