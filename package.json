@@ -1,15 +1,15 @@
 {
-  "dependencies": {
-    "express": "^4.21.2",
-    "web3": "^4.16.0"
-  },
-  "devDependencies": {
-    "parcel": "^2.14.4"
-  },
-  "scripts": {
-    "migrate": "npx truffle migrate",
-    "start": "node server.js",
-    "build": "parcel build public/index.html --dist-dir public/dist",
-    "dev": "parcel public/index.html --dist-dir public/dist"
-  }
+    "dependencies": {
+        "express": "^4.21.2",
+        "web3": "^4.16.0"
+    },
+    "devDependencies": {
+        "parcel": "^2.14.4"
+    },
+    "scripts": {
+        "migrate": "npx truffle migrate",
+        "start": "node server.js",
+        "build": "parcel build public/index.html --dist-dir public/dist",
+        "dev": "parcel public/index.html --dist-dir public/dist"
+    }
 }
