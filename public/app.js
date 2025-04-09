@@ -1,208 +1,43 @@
-import Web3 from "web3";
-
-const Web3 = require("web3").default;
-
 async function fetchData() {
     try {
-        const web3 = new Web3("http://127.0.0.1:8545");
-        const contractABI = [
-            // Paste your CORRECT ABI here, which includes getLatestReading
-            {
-                "inputs": [],
-                "stateMutability": "nonpayable",
-                "type": "constructor"
-            },
-            {
-                "anonymous": false,
-                "inputs": [
-                    {
-                        "indexed": false,
-                        "internalType": "uint256",
-                        "name": "timestamp",
-                        "type": "uint256"
-                    },
-                    {
-                        "indexed": false,
-                        "internalType": "uint256",
-                        "name": "co2",
-                        "type": "uint256"
-                    },
-                    {
-                        "indexed": false,
-                        "internalType": "uint256",
-                        "name": "no2",
-                        "type": "uint256"
-                    },
-                    {
-                        "indexed": false,
-                        "internalType": "uint256",
-                        "name": "pm25",
-                        "type": "uint256"
-                    },
-                    {
-                        "indexed": false,
-                        "internalType": "uint256",
-                        "name": "pm10",
-                        "type": "uint256"
-                    }
-                ],
-                "name": "NewReading",
-                "type": "event"
-            },
-            {
-                "inputs": [],
-                "name": "owner",
-                "outputs": [
-                    {
-                        "internalType": "address",
-                        "name": "",
-                        "type": "address"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function",
-                "constant": true
-            },
-            {
-                "inputs": [
-                    {
-                        "internalType": "uint256",
-                        "name": "",
-                        "type": "uint256"
-                    }
-                ],
-                "name": "readings",
-                "outputs": [
-                    {
-                        "internalType": "uint256",
-                        "name": "timestamp",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "co2",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "no2",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "pm25",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "pm10",
-                        "type": "uint256"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function",
-                "constant": true
-            },
-            {
-                "inputs": [
-                    {
-                        "internalType": "uint256",
-                        "name": "_co2",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "_no2",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "_pm25",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "_pm10",
-                        "type": "uint256"
-                    }
-                ],
-                "name": "addReading",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "inputs": [],
-                "name": "getReadingCount",
-                "outputs": [
-                    {
-                        "internalType": "uint256",
-                        "name": "",
-                        "type": "uint256"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function",
-                "constant": true
-            },
-            {
-                "inputs": [
-                    {
-                        "internalType": "uint256",
-                        "name": "index",
-                        "type": "uint256"
-                    }
-                ],
-                "name": "getReading",
-                "outputs": [
-                    {
-                        "internalType": "uint256",
-                        "name": "",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "",
-                        "type": "uint256"
-                    }
-                ],
-                "stateMutability": "view",
-                "type": "function",
-                "constant": true
-            }
-        ];
-        const contractAddress = "0x8939bb96Edf6a6f7FC96f0148F66063D0f00a69B";
+        // Fetch data from your backend API endpoint
+        const response = await fetch('/api/data'); // Request to your Express server
 
-        const airQualityContract = new web3.eth.Contract(contractABI, contractAddress);
-        const readingCount = await airQualityContract.methods.getReadingCount().call();
-        if (readingCount > 0) {
-            const latestReading = await airQualityContract.methods.getReading(readingCount - 1).call();
-
-            document.getElementById("co2").textContent = latestReading[1];
-            document.getElementById("no2").textContent = latestReading[2];
-            document.getElementById("pm25").textContent = latestReading[3];
-            document.getElementById("pm10").textContent = latestReading[4];
+        if (!response.ok) {
+            // Handle HTTP errors (like 500 Internal Server Error from the backend)
+            const errorData = await response.json();
+            throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
         }
+
+        const data = await response.json();
+
+        // Check if data or a message was received
+        if (data.message) {
+            console.log(data.message);
+             document.getElementById("co2").textContent = 'N/A';
+             document.getElementById("no2").textContent = 'N/A';
+             document.getElementById("pm25").textContent = 'N/A';
+             document.getElementById("pm10").textContent = 'N/A';
+        } else if (data.co2 !== undefined) { // Check if actual data fields exist
+            // Update the HTML elements with data received from the backend
+            document.getElementById("co2").textContent = data.co2;
+            document.getElementById("no2").textContent = data.no2;
+            document.getElementById("pm25").textContent = data.pm25;
+            document.getElementById("pm10").textContent = data.pm10;
+        } else {
+             console.warn("Received unexpected data format:", data);
+        }
+
     } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching data from backend API:", error);
+        // Display error to the user
+        document.getElementById("co2").textContent = 'Error';
+        document.getElementById("no2").textContent = 'Error';
+        document.getElementById("pm25").textContent = 'Error';
+        document.getElementById("pm10").textContent = 'Error';
     }
 }
 
-// Fetch data every 5 seconds
+// Fetch data immediately and then every 5 seconds
 fetchData();
-setInterval(fetchData, 3000);
+setInterval(fetchData, 5000); // Increased interval slightly
