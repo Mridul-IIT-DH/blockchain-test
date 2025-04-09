@@ -3,15 +3,45 @@
 <head>
     <title>Air Quality Dashboard</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1>Air Quality Data</h1>
-    <div id="data">
-        <p>CO2: <span id="co2"></span></p>
-        <p>NO2: <span id="no2"></span></p>
-        <p>PM2.5: <span id="pm25"></span></p>
-        <p>PM10: <span id="pm10"></span></p>
+
+    <div class="molecule-container">
+        <div class="molecule co2">CO₂</div>
+        <div class="molecule no2">NO₂</div>
+        <div class="molecule pm25">PM₂.₅</div>
+        <div class="molecule pm10">PM₁₀</div>
+         <div class="molecule co2" style="top: 70%; left: 80%; animation-delay: 2s;">CO₂</div>
+        <div class="molecule no2" style="top: 15%; left: 65%; animation-delay: 4s;">NO₂</div>
+        <div class="molecule pm25" style="top: 85%; left: 10%; animation-delay: 1s;">PM₂.₅</div>
+        <div class="molecule pm10" style="top: 5%; left: 20%; animation-delay: 3s;">PM₁₀</div>
     </div>
+
+    <div class="dashboard-container">
+        <h1>Air Quality Dashboard</h1>
+        <div id="data-cards">
+            <div class="data-card">
+                <h2>CO₂</h2>
+                <p><span id="co2">Loading...</span> ppm</p>
+            </div>
+            <div class="data-card">
+                <h2>NO₂</h2>
+                <p><span id="no2">Loading...</span> µg/m³</p>
+            </div>
+            <div class="data-card">
+                <h2>PM₂.₅</h2>
+                <p><span id="pm25">Loading...</span> µg/m³</p>
+            </div>
+            <div class="data-card">
+                <h2>PM₁₀</h2>
+                <p><span id="pm10">Loading...</span> µg/m³</p>
+            </div>
+        </div>
+    </div>
+
     <script type="module" src="app.js"></script>
 </body>
 </html>

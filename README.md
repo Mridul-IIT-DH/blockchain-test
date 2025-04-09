@@ -335,30 +335,200 @@ This document provides a comprehensive guide to building a simulated Decentraliz
     <head>
         <title>Air Quality Dashboard</title>
         <link rel="stylesheet" href="styles.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     </head>
     <body>
-        <h1>Air Quality Data</h1>
-        <div id="data">
-            <p>CO2: <span id="co2"></span></p>
-            <p>NO2: <span id="no2"></span></p>
-            <p>PM2.5: <span id="pm25"></span></p>
-            <p>PM10: <span id="pm10"></span></p>
+
+        <div class="molecule-container">
+            <div class="molecule co2">CO₂</div>
+            <div class="molecule no2">NO₂</div>
+            <div class="molecule pm25">PM₂.₅</div>
+            <div class="molecule pm10">PM₁₀</div>
+            <div class="molecule co2" style="top: 70%; left: 80%; animation-delay: 2s;">CO₂</div>
+            <div class="molecule no2" style="top: 15%; left: 65%; animation-delay: 4s;">NO₂</div>
+            <div class="molecule pm25" style="top: 85%; left: 10%; animation-delay: 1s;">PM₂.₅</div>
+            <div class="molecule pm10" style="top: 5%; left: 20%; animation-delay: 3s;">PM₁₀</div>
         </div>
+
+        <div class="dashboard-container">
+            <h1>Air Quality Dashboard</h1>
+            <div id="data-cards">
+                <div class="data-card">
+                    <h2>CO₂</h2>
+                    <p><span id="co2">Loading...</span> ppm</p>
+                </div>
+                <div class="data-card">
+                    <h2>NO₂</h2>
+                    <p><span id="no2">Loading...</span> µg/m³</p>
+                </div>
+                <div class="data-card">
+                    <h2>PM₂.₅</h2>
+                    <p><span id="pm25">Loading...</span> µg/m³</p>
+                </div>
+                <div class="data-card">
+                    <h2>PM₁₀</h2>
+                    <p><span id="pm10">Loading...</span> µg/m³</p>
+                </div>
+            </div>
+        </div>
+
         <script type="module" src="app.js"></script>
     </body>
     </html>
     ```
     **CSS code**
     ```css
+    /* General Styles & Theme */
     body {
-        font-family: sans-serif;
-        text-align: center;
-        margin: 50px;
+        font-family: 'Poppins', sans-serif; /* Using Google Font */
+        margin: 0;
+        padding: 0;
+        background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 50%, #80deea 100%); /* Light blue gradient background */
+        color: #333;
+        min-height: 100vh; /* Ensure body takes full height */
+        overflow: hidden; /* Hide overflow to prevent scrollbars from molecule animation */
+        position: relative; /* Needed for absolute positioning of molecules */
     }
 
-    #data {
-        margin-top: 20px;
-        font-size: 1.2em;
+    h1 {
+        text-align: center;
+        color: #004d40; /* Dark teal color */
+        margin-top: 40px;
+        margin-bottom: 30px;
+        font-weight: 600;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .dashboard-container {
+        position: relative; /* Ensure cards stay above molecules */
+        z-index: 1;
+        padding: 20px;
+    }
+
+    /* Data Card Grid Layout */
+    #data-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Responsive grid */
+        gap: 25px; /* Spacing between cards */
+        max-width: 1000px; /* Max width of the card container */
+        margin: 20px auto; /* Center the container */
+        padding: 0 20px; /* Padding on the sides */
+    }
+
+    /* Glass/Ice Card Styling */
+    .data-card {
+        background: rgba(255, 255, 255, 0.25); /* Semi-transparent white background */
+        backdrop-filter: blur(10px); /* Frosted glass effect */
+        -webkit-backdrop-filter: blur(10px); /* Safari support */
+        border-radius: 15px; /* Rounded corners */
+        border: 1px solid rgba(255, 255, 255, 0.35); /* Subtle border */
+        padding: 25px;
+        text-align: center;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15); /* Soft shadow */
+        transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effect */
+    }
+
+    .data-card:hover {
+        transform: translateY(-5px); /* Slight lift on hover */
+        box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.2);
+    }
+
+    .data-card h2 {
+        margin-top: 0;
+        margin-bottom: 10px;
+        color: #00695c; /* Slightly darker teal for headings */
+        font-size: 1.3em;
+        font-weight: 600;
+    }
+
+    .data-card p {
+        font-size: 1.1em;
+        margin-bottom: 0;
+        color: #004d40; /* Dark teal text */
+        font-weight: 400;
+    }
+
+    .data-card span {
+        font-size: 1.8em; /* Larger font for the value */
+        font-weight: 600;
+        display: block; /* Make span take full width */
+        margin-bottom: 5px;
+        color: #00796b; /* Main teal color */
+    }
+
+
+    /* Floating Molecules */
+    .molecule-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0; /* Behind the main content */
+        pointer-events: none; /* Allow clicks to pass through */
+    }
+
+    .molecule {
+        position: absolute;
+        border-radius: 50%; /* Make them circular initially */
+        color: rgba(0, 77, 64, 0.5); /* Semi-transparent dark teal */
+        font-weight: bold;
+        font-size: 1.5em; /* Adjust size as needed */
+        width: 60px; /* Size of the molecule */
+        height: 60px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0.6; /* Make them slightly faded */
+        animation: float 15s infinite linear; /* Base animation */
+    }
+
+    /* Unique starting positions and delays (examples) */
+    .molecule.co2 { top: 20%; left: 10%; animation-duration: 18s; }
+    .molecule.no2 { top: 40%; left: 85%; animation-duration: 14s; font-size: 1.6em; width: 65px; height: 65px; }
+    .molecule.pm25 { top: 60%; left: 30%; animation-duration: 20s; font-size: 1.2em; width: 50px; height: 50px;}
+    .molecule.pm10 { top: 80%; left: 70%; animation-duration: 16s; font-size: 1.8em; width: 70px; height: 70px;}
+
+    /* Add variations for the extra molecules */
+    /* (Example: Use inline styles in HTML or add more specific CSS rules) */
+
+    /* Floating Animation */
+    @keyframes float {
+        0% { transform: translateY(0px) translateX(0px) rotate(0deg); }
+        25% { transform: translateY(-20px) translateX(15px) rotate(15deg); }
+        50% { transform: translateY(10px) translateX(-10px) rotate(-5deg); }
+        75% { transform: translateY(-15px) translateX(-15px) rotate(10deg); }
+        100% { transform: translateY(0px) translateX(0px) rotate(0deg); }
+    }
+
+    /* Optional: Simple media query for smaller screens */
+    @media (max-width: 768px) {
+        #data-cards {
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+        }
+        h1 {
+            font-size: 1.8em;
+        }
+        .data-card {
+            padding: 20px;
+        }
+        .molecule {
+            font-size: 1.2em;
+            width: 50px;
+            height: 50px;
+        }
+    }
+    @media (max-width: 480px) {
+        #data-cards {
+            grid-template-columns: 1fr; /* Stack cards vertically */
+            gap: 15px;
+        }
+        .molecule {
+            opacity: 0.3; /* Reduce molecule visibility on small screens */
+        }
     }
     ```
 
